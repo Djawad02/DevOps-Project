@@ -9,7 +9,7 @@ services:
       - proj-network
 
   appointments:
-    image: djawad02/appointment-microservice:latest
+    image: djawad02/appointment-microservice:5964bbb63eadb74ddf0d61ff3e2f80a860144789
     networks:
       - proj-network
     ports:
