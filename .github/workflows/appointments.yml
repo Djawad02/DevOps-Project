@@ -1,0 +1,42 @@
+name: Appointments CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'appointments/**'
+  pull_request:
+    branches:
+      - '*'
+    paths:
+      - 'appointments/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }} ./appointments
+
+    - name: Log in to DockerHub
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push Docker image to DockerHub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }}
+
+    - name: Update Docker Compose file
+      run: |
+        echo "Updating Docker Compose file..."
+        sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }}|" docker-compose.yml
+        cat docker-compose.yml
+        git add docker-compose.yml
+        git commit -m "Update appointments image tag to ${{ github.sha }}"
+        git push
+
+    - name: Clean up
+      run: docker logout
