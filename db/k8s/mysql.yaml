@@ -1,0 +1,95 @@
+# This is the service used by appointments microservice
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointments-db-service
+spec:
+  selector:
+    app: appointments-db
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+
+---
+
+# This is the service used by doctors microservice
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: doctors-db-service
+spec:
+  selector:
+    app: doctors-db
+  ports:
+  - protocol: TCP
+    port: 3306
+    targetPort: 3306
+
+---
+
+# This is the deployment for appointments microservice
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointments-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: appointments-db
+  template:
+    metadata:
+      labels:
+        app: appointments-db
+    spec:
+      containers:
+      - name: mysql-container
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root_password
+        - name: MYSQL_DATABASE
+          value: appointmentsdb
+        - name: MYSQL_USER
+          value: db_user
+        - name: MYSQL_PASSWORD
+          value: db_password
+        ports:
+        - containerPort: 3306
+
+---
+
+# This is the deployment for doctors microservice
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctors-db-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doctors-db
+  template:
+    metadata:
+      labels:
+        app: doctors-db
+    spec:
+      containers:
+      - name: mysql-container
+        image: mysql:5.7
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: root_password
+        - name: MYSQL_DATABASE
+          value: doctorsdb
+        - name: MYSQL_USER
+          value: db_user
+        - name: MYSQL_PASSWORD
+          value: db_password
+        ports:
+        - containerPort: 3306
