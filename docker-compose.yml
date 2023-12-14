@@ -1,0 +1,43 @@
+version: '1'
+
+services:
+  frontend:
+    image: djawad02/frontend-microservice:latest
+    ports:
+      - "3000:3000"
+    networks:
+      - proj-network
+
+  appointments:
+    image: djawad02/appointment-microservice:latest
+    networks:
+      - proj-network
+    ports:
+      - "7070:7070"
+    depends_on:
+      - database
+
+  doctors:
+    image: djawad02/doctor-microservice:latest
+    networks:
+      - proj-network
+    ports:
+      - "9090:9090"
+    depends_on:
+      - database
+
+  database:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: appointmentsdb
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    ports:
+      - "3306:3306"
+    networks:
+      - proj-network
+
+networks:
+  proj-network:
+    driver: bridge
