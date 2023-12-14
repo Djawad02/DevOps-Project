@@ -1,0 +1,47 @@
+name: Doctors CI/CD
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'doctors/**'
+  pull_request:
+    branches:
+      - '*'
+    paths:
+      - 'doctors/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Git
+      run: |
+        git config --global user.email "actions@github.com"
+        git config --global user.name "GitHub Actions"
+        
+    - name: Build Docker image for Doctors
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/doctor-microservice:${{ github.sha }} ./doctors
+
+    - name: Log in to DockerHub
+      run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Push Docker image to DockerHub
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/doctor-microservice:${{ github.sha }}
+
+    - name: Update Docker Compose file for Doctors service
+      run: |
+        echo "Updating Docker Compose file for Doctors service..."
+        sed -i "s|image: djawad02/doctor-microservice:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/doctor-microservice:${{ github.sha }}|" docker-compose.yml
+        cat docker-compose.yml
+        git add docker-compose.yml
+        git commit -m "Update doctors image tag to ${{ github.sha }}"
+        git push
+
+    - name: Clean up
+      run: docker logout
