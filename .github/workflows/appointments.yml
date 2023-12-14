@@ -37,7 +37,7 @@ jobs:
     - name: Update Docker Compose file
       run: |
         echo "Updating Docker Compose file..."
-        sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }}|" docker-compose.yml
+        sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/appointment-microservice:${{ github.sha }}|" docker-compose.yml
         cat docker-compose.yml
         git add docker-compose.yml
         git commit -m "Update appointments image tag to ${{ github.sha }}"
