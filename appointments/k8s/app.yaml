@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appointments-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: appointments
+  template:
+    metadata:
+      labels:
+        app: appointments
+    spec:
+      containers:
+      - name: appointments-container
+        image: djawad02/appointment-microservice:latest
+        env:
+        - name: DATABASE_HOST
+          value: appointments-db-service
+        - name: DATABASE_PORT
+          value: "3306"
+        ports:
+        - containerPort: 7070
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: appointments-microservice
+spec:
+  selector:
+    app: appointments
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 7070
