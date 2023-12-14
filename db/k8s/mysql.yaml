@@ -51,13 +51,7 @@ spec:
         image: mysql:5.7
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: root_password
-        - name: MYSQL_DATABASE
-          value: appointmentsdb
-        - name: MYSQL_USER
-          value: db_user
-        - name: MYSQL_PASSWORD
-          value: db_password
+          value: "dj123"
         ports:
         - containerPort: 3306
         resources:
@@ -103,13 +97,7 @@ spec:
         image: mysql:5.7
         env:
         - name: MYSQL_ROOT_PASSWORD
-          value: root_password
-        - name: MYSQL_DATABASE
-          value: doctorsdb
-        - name: MYSQL_USER
-          value: db_user
-        - name: MYSQL_PASSWORD
-          value: db_password
+          value:"dj123"
         ports:
         - containerPort: 3306
         resources:
