@@ -60,6 +60,25 @@ spec:
           value: db_password
         ports:
         - containerPort: 3306
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3306
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 20
 
 ---
 
@@ -93,3 +112,23 @@ spec:
           value: db_password
         ports:
         - containerPort: 3306
+        resources:
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3306
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3306
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        
