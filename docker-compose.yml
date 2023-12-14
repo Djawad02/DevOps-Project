@@ -2,7 +2,7 @@ version: '1'
 
 services:
   frontend:
-    image: djawad02/frontend-microservice:latest
+    image: djawad02/frontend-microservice:808469f6083e308a372bee3249f0ee8dadd2f369
     ports:
       - "3000:3000"
     networks:
