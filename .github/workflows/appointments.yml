@@ -26,18 +26,18 @@ jobs:
         git config --global user.name "GitHub Actions"
         
     - name: Build Docker image
-      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }} ./appointments
+      run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/appointment-microservice:${{ github.sha }} ./appointments
 
     - name: Log in to DockerHub
       run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Push Docker image to DockerHub
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/appointments:${{ github.sha }}
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/appointment-microservice:${{ github.sha }}
 
     - name: Update Docker Compose file
       run: |
-        echo "Updating Docker Compose file..."
-        sed -i "s|image:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/appointment-microservice:${{ github.sha }}|" docker-compose.yml
+        echo "Updating Docker Compose file for Appointments service..."
+        sed -i "s|image: djawad02/appointment-microservice:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/appointment-microservice:${{ github.sha }}|" docker-compose.yml
         cat docker-compose.yml
         git add docker-compose.yml
         git commit -m "Update appointments image tag to ${{ github.sha }}"
