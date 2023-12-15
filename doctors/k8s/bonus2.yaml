@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctors-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: doctors
+  template:
+    metadata:
+      labels:
+        app: doctors
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+
+      initContainers:
+      - name: init-container
+        image: ubuntu:latest
+        command: ["/bin/sh", "-c", "echo 'Dania Jawad'; sleep 5"]
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+
+      containers:
+      - name: main-container
+        image: djawad02/doctor-microservice:latest
+        env:
+        - name: DATABASE_HOST
+          value: doctors-db-service
+        - name: DATABASE_PORT
+          value: "3306"
+        ports:
+        - containerPort: 9090
+        volumeMounts:
+        - name: user-details
+          mountPath: /user
+          readOnly: true
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000
+
+      volumes:
+      - name: user-details
+        configMap:
+          name: doctors
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: doctors-microservice
+spec:
+  selector:
+    app: doctors
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9090
