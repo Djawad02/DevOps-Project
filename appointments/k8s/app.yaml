@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: appointments-microservice
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: appointments
@@ -20,27 +20,18 @@ spec:
           value: appointments-db-service
         - name: DATABASE_PORT
           value: "3306"
+        - name: NAME
+          valueFrom:
+            secretKeyRef:
+              name: appointment
+              key: NAME
+        - name: PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appointment
+              key: PASSWORD
         ports:
         - containerPort: 7070
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 7070
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 7070
-          initialDelaySeconds: 15
-          periodSeconds: 20
 
 ---
 
