@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: doctors-microservice
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: doctors
@@ -22,25 +22,15 @@ spec:
           value: "3306"
         ports:
         - containerPort: 9090
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 9090
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 9090
-          initialDelaySeconds: 15
-          periodSeconds: 20
+        volumeMounts:
+        - name: user-details
+          mountPath: /user
+          readOnly: true
+
+      volumes:
+      - name: user-details
+        configMap:
+          name: doctors
         
 ---
 
