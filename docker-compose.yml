@@ -18,7 +18,7 @@ services:
       - database
 
   doctors:
-    image: djawad02/doctor-microservice:13318b5e842b324b75240e50ce02e320ee02663c
+    image: djawad02/doctor-microservice:87fb111f9bc2dbae6e8f2c229cae8c6152f1000d
     networks:
       - proj-network
     ports:
